@@ -1,0 +1,45 @@
+{
+  "name": "open-warehouse",
+  "version": "0.1.0",
+  "description": "Interactive warehouse floor-plan editor React component",
+  "type": "module",
+  "main": "dist/open-warehouse.cjs",
+  "module": "dist/open-warehouse.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/open-warehouse.js",
+      "require": "./dist/open-warehouse.cjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "@use-gesture/react": "^10.3.1",
+    "immer": "^10.1.1",
+    "konva": "^9.3.18",
+    "nanoid": "^5.0.9",
+    "react-konva": "^18.2.10",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vite-plugin-dts": "^4.3.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tail:*)",
+      "Bash(cd /c/Users/sena2/IdeaProjects/openWarehouse && npm run build 2>&1)",
+      "Bash(cd /c/Users/sena2/IdeaProjects/openWarehouse && npx tsc --noEmit 2>&1)",
+      "Bash(ls:*)",
+      "Bash(true:*)"
+    ]
+  }
+}

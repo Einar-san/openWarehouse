@@ -1,0 +1,203 @@
+import type { WarehouseData } from '../types';
+
+export const defaultWarehouseData: WarehouseData = {
+  nodes: [
+    // Building outline
+    {
+      id: 'building-1',
+      type: 'building',
+      x: 20,
+      y: 20,
+      width: 640,
+      height: 680,
+      label: 'Warehouse',
+    },
+    // Obstacles (columns)
+    {
+      id: 'obstacle-1',
+      type: 'obstacle',
+      x: 200,
+      y: 140,
+      width: 20,
+      height: 120,
+      color: '#444',
+    },
+    {
+      id: 'obstacle-2',
+      type: 'obstacle',
+      x: 460,
+      y: 140,
+      width: 20,
+      height: 120,
+      color: '#444',
+    },
+    // Zones
+    {
+      id: 'zone-inbound',
+      type: 'zone',
+      x: 40,
+      y: 40,
+      width: 100,
+      height: 160,
+      label: 'inbound staging',
+      color: 'rgba(200, 50, 200, 0.15)',
+    },
+    {
+      id: 'zone-outbound',
+      type: 'zone',
+      x: 540,
+      y: 40,
+      width: 100,
+      height: 120,
+      label: 'outbound shipment',
+      color: 'rgba(220, 60, 80, 0.15)',
+    },
+    {
+      id: 'zone-free-1',
+      type: 'zone',
+      x: 40,
+      y: 560,
+      width: 180,
+      height: 100,
+      label: 'free area',
+      color: 'rgba(50, 180, 50, 0.15)',
+    },
+    {
+      id: 'zone-free-2',
+      type: 'zone',
+      x: 440,
+      y: 560,
+      width: 180,
+      height: 100,
+      label: 'free area',
+      color: 'rgba(50, 180, 50, 0.15)',
+    },
+    // Racks
+    {
+      id: 'rack-1',
+      type: 'rack',
+      x: 160,
+      y: 60,
+      width: 420,
+      height: 60,
+      label: 'racks 1',
+      color: 'lightblue',
+    },
+    {
+      id: 'rack-2',
+      type: 'rack',
+      x: 140,
+      y: 300,
+      width: 440,
+      height: 60,
+      label: 'racks 2',
+      color: 'lightblue',
+    },
+    {
+      id: 'rack-3',
+      type: 'rack',
+      x: 140,
+      y: 440,
+      width: 440,
+      height: 60,
+      label: 'racks 3',
+      color: 'lightblue',
+    },
+    // Stations
+    {
+      id: 'station-returns',
+      type: 'station',
+      x: 40,
+      y: 220,
+      width: 80,
+      height: 100,
+      label: 'returns',
+      color: '#f7d679',
+    },
+    {
+      id: 'station-packing-1',
+      type: 'station',
+      x: 240,
+      y: 220,
+      width: 120,
+      height: 40,
+      label: 'packing',
+      color: '#f7d679',
+    },
+    {
+      id: 'station-packing-2',
+      type: 'station',
+      x: 240,
+      y: 380,
+      width: 120,
+      height: 40,
+      label: 'packing',
+      color: '#f7d679',
+    },
+    {
+      id: 'station-labeling',
+      type: 'station',
+      x: 420,
+      y: 200,
+      width: 120,
+      height: 80,
+      label: 'labeling',
+      color: '#f7d679',
+    },
+    {
+      id: 'station-damaged',
+      type: 'station',
+      x: 560,
+      y: 200,
+      width: 80,
+      height: 80,
+      label: 'damaged items',
+      color: '#f7d679',
+    },
+  ],
+  links: [
+    // Horizontal picking paths (left to right)
+    {
+      id: 'link-picking-1',
+      points: [
+        [160, 160],
+        [560, 160],
+      ],
+      label: 'picking path',
+    },
+    {
+      id: 'link-picking-2',
+      points: [
+        [140, 380],
+        [220, 380],
+      ],
+      label: 'picking path',
+    },
+    {
+      id: 'link-picking-3',
+      points: [
+        [140, 520],
+        [560, 520],
+      ],
+      label: 'picking path',
+    },
+    // Vertical path (down)
+    {
+      id: 'link-path-down',
+      points: [
+        [100, 340],
+        [100, 520],
+      ],
+      label: 'path',
+    },
+    // Horizontal path (right to left)
+    {
+      id: 'link-path-left',
+      points: [
+        [560, 340],
+        [400, 340],
+      ],
+      label: 'path',
+    },
+  ],
+};
