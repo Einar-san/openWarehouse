@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import { createStore, useStore as useZustandStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { nanoid } from 'nanoid';
+import { current } from 'immer';
 import type { WarehouseNode, WarehouseLink, WarehouseData, ToolType } from '../types';
 
 const MAX_HISTORY = 50;
@@ -32,8 +32,8 @@ export interface WarehouseState {
 
 function pushHistory(state: WarehouseState) {
   const snapshot: WarehouseData = {
-    nodes: JSON.parse(JSON.stringify(state.nodes)),
-    links: JSON.parse(JSON.stringify(state.links)),
+    nodes: current(state.nodes),
+    links: current(state.links),
   };
   // Truncate any future history beyond current index
   const newHistory = state.history.slice(0, state.historyIndex + 1);
@@ -48,7 +48,7 @@ function pushHistory(state: WarehouseState) {
 
 export function createWarehouseStore(initialData?: WarehouseData) {
   const initial: WarehouseData = initialData ?? { nodes: [], links: [] };
-  const initialSnapshot: WarehouseData = JSON.parse(JSON.stringify(initial));
+  const initialSnapshot: WarehouseData = structuredClone(initial);
 
   return createStore<WarehouseState>()(
     immer((set, get) => ({
@@ -61,7 +61,7 @@ export function createWarehouseStore(initialData?: WarehouseData) {
 
       init: (data: WarehouseData) =>
         set((state) => {
-          const snapshot: WarehouseData = JSON.parse(JSON.stringify(data));
+          const snapshot: WarehouseData = structuredClone(data);
           state.nodes = snapshot.nodes;
           state.links = snapshot.links;
           state.selectedId = null;
@@ -72,7 +72,7 @@ export function createWarehouseStore(initialData?: WarehouseData) {
 
       addNode: (node) =>
         set((state) => {
-          const newNode: WarehouseNode = { ...node, id: node.id ?? nanoid() };
+          const newNode: WarehouseNode = { ...node, id: node.id ?? crypto.randomUUID() };
           state.nodes.push(newNode);
           pushHistory(state);
         }),
@@ -94,7 +94,7 @@ export function createWarehouseStore(initialData?: WarehouseData) {
 
       addLink: (link) =>
         set((state) => {
-          const newLink: WarehouseLink = { ...link, id: link.id ?? nanoid() };
+          const newLink: WarehouseLink = { ...link, id: link.id ?? crypto.randomUUID() };
           state.links.push(newLink);
           pushHistory(state);
         }),
@@ -142,7 +142,7 @@ export function createWarehouseStore(initialData?: WarehouseData) {
         set((state) => {
           if (state.historyIndex <= 0) return;
           state.historyIndex--;
-          const snapshot = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
+          const snapshot = structuredClone(state.history[state.historyIndex]);
           state.nodes = snapshot.nodes;
           state.links = snapshot.links;
           state.selectedId = null;
@@ -152,7 +152,7 @@ export function createWarehouseStore(initialData?: WarehouseData) {
         set((state) => {
           if (state.historyIndex >= state.history.length - 1) return;
           state.historyIndex++;
-          const snapshot = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
+          const snapshot = structuredClone(state.history[state.historyIndex]);
           state.nodes = snapshot.nodes;
           state.links = snapshot.links;
           state.selectedId = null;
@@ -160,7 +160,7 @@ export function createWarehouseStore(initialData?: WarehouseData) {
 
       getData: () => {
         const { nodes, links } = get();
-        return JSON.parse(JSON.stringify({ nodes, links }));
+        return structuredClone({ nodes, links });
       },
     }))
   );

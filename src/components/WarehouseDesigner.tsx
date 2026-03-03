@@ -41,20 +41,27 @@ export function WarehouseDesigner({
     return unsub;
   }, [store, onChange]);
 
-  // Measure container for pixel width
+  // Measure container for pixel width (debounced via rAF)
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    let rafId = 0;
     const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setCanvasSize({
-          w: Math.floor(entry.contentRect.width),
-          h: Math.floor(entry.contentRect.height),
-        });
-      }
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        for (const entry of entries) {
+          setCanvasSize({
+            w: Math.floor(entry.contentRect.width),
+            h: Math.floor(entry.contentRect.height),
+          });
+        }
+      });
     });
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      cancelAnimationFrame(rafId);
+      observer.disconnect();
+    };
   }, []);
 
   useKeyboardShortcuts(store, readOnly);

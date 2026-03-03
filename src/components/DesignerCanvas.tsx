@@ -26,25 +26,40 @@ const Z_ORDER: Record<string, number> = {
   station: 4,
 };
 
-function GridLayer({ width, height, gridSize }: { width: number; height: number; gridSize: number }) {
+interface GridLayerProps {
+  viewportWidth: number;
+  viewportHeight: number;
+  gridSize: number;
+  stageX: number;
+  stageY: number;
+  stageScale: number;
+}
+
+function GridLayer({ viewportWidth, viewportHeight, gridSize, stageX, stageY, stageScale }: GridLayerProps) {
   const lines = useMemo(() => {
+    // Calculate visible area in world coordinates with a one-cell buffer
+    const x0 = Math.floor(-stageX / stageScale / gridSize - 1) * gridSize;
+    const y0 = Math.floor(-stageY / stageScale / gridSize - 1) * gridSize;
+    const x1 = Math.ceil((-stageX + viewportWidth) / stageScale / gridSize + 1) * gridSize;
+    const y1 = Math.ceil((-stageY + viewportHeight) / stageScale / gridSize + 1) * gridSize;
+
     const vLines: { x: number; isMain: boolean }[] = [];
-    for (let x = 0; x <= width; x += gridSize) {
+    for (let x = x0; x <= x1; x += gridSize) {
       vLines.push({ x, isMain: x % (gridSize * 5) === 0 });
     }
     const hLines: { y: number; isMain: boolean }[] = [];
-    for (let y = 0; y <= height; y += gridSize) {
+    for (let y = y0; y <= y1; y += gridSize) {
       hLines.push({ y, isMain: y % (gridSize * 5) === 0 });
     }
-    return { vLines, hLines };
-  }, [width, height, gridSize]);
+    return { vLines, hLines, y0, y1, x0, x1 };
+  }, [viewportWidth, viewportHeight, gridSize, stageX, stageY, stageScale]);
 
   return (
     <Group>
       {lines.vLines.map((line, i) => (
         <Line
           key={`v${i}`}
-          points={[line.x, 0, line.x, height]}
+          points={[line.x, lines.y0, line.x, lines.y1]}
           stroke={line.isMain ? '#ccc' : '#eee'}
           strokeWidth={line.isMain ? 1 : 0.5}
           listening={false}
@@ -53,7 +68,7 @@ function GridLayer({ width, height, gridSize }: { width: number; height: number;
       {lines.hLines.map((line, i) => (
         <Line
           key={`h${i}`}
-          points={[0, line.y, width, line.y]}
+          points={[lines.x0, line.y, lines.x1, line.y]}
           stroke={line.isMain ? '#ccc' : '#eee'}
           strokeWidth={line.isMain ? 1 : 0.5}
           listening={false}
@@ -284,9 +299,6 @@ export function DesignerCanvas({ width, height, gridSize, readOnly }: Props) {
     };
   }, [handleKeyDown, handleKeyUp]);
 
-  const canvasW = Math.max(width * 3, 2000);
-  const canvasH = Math.max(height * 3, 2000);
-
   const cursor = isPanning ? 'grabbing' : spaceDown ? 'grab' : tool !== 'select' ? 'crosshair' : 'default';
 
   const renderNode = (node: WarehouseNode) => {
@@ -366,7 +378,14 @@ export function DesignerCanvas({ width, height, gridSize, readOnly }: Props) {
       >
         {/* Layer 0: Grid */}
         <Layer listening={false}>
-          <GridLayer width={canvasW} height={canvasH} gridSize={gridSize} />
+          <GridLayer
+            viewportWidth={width}
+            viewportHeight={height}
+            gridSize={gridSize}
+            stageX={stagePos.x}
+            stageY={stagePos.y}
+            stageScale={stageScale}
+          />
         </Layer>
         {/* Layer 1: Content */}
         <Layer>

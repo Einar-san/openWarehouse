@@ -105,7 +105,7 @@ export function LinkLayer({ links, selectedId, gridSize, readOnly, onSelect, onU
             {isSelected && !readOnly &&
               link.points.map(([px, py], i) => (
                 <Circle
-                  key={i}
+                  key={`${link.id}-wp${i}`}
                   x={px}
                   y={py}
                   radius={6}

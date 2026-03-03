@@ -3,6 +3,22 @@ import type { ToolType, WarehouseData } from '../types';
 import { useWarehouseStore, useWarehouseStoreApi } from '../store/useStore';
 import { exportToPNG } from '../utils/exportPNG';
 
+function isValidWarehouseData(data: unknown): data is WarehouseData {
+  if (typeof data !== 'object' || data === null) return false;
+  const obj = data as Record<string, unknown>;
+  if (!Array.isArray(obj.nodes) || !Array.isArray(obj.links)) return false;
+  return obj.nodes.every(
+    (n: unknown) =>
+      typeof n === 'object' && n !== null &&
+      typeof (n as Record<string, unknown>).id === 'string' &&
+      typeof (n as Record<string, unknown>).type === 'string' &&
+      typeof (n as Record<string, unknown>).x === 'number' &&
+      typeof (n as Record<string, unknown>).y === 'number' &&
+      typeof (n as Record<string, unknown>).width === 'number' &&
+      typeof (n as Record<string, unknown>).height === 'number',
+  );
+}
+
 interface Props {
   containerId: string;
 }
@@ -57,12 +73,14 @@ export function Toolbar({ containerId }: Props) {
     const reader = new FileReader();
     reader.onload = (evt) => {
       try {
-        const data = JSON.parse(evt.target?.result as string) as WarehouseData;
-        if (data.nodes && data.links) {
-          state().init(data);
+        const parsed: unknown = JSON.parse(evt.target?.result as string);
+        if (isValidWarehouseData(parsed)) {
+          state().init(parsed);
+        } else {
+          console.warn('openWarehouse: imported file has invalid structure');
         }
       } catch {
-        // ignore invalid JSON
+        console.warn('openWarehouse: imported file is not valid JSON');
       }
     };
     reader.readAsText(file);
