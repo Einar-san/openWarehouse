@@ -20,7 +20,7 @@ Drop the `<WarehouseDesigner>` component into any React 18+ app to get a fully i
 - **Read-only mode** — Disable all editing with a single prop
 - **Multiple instances** — Each `<WarehouseDesigner>` creates its own isolated store via React context
 - **TypeScript** — Full type definitions included out of the box
-- **Lightweight** — No heavy diagram framework; uses only MIT-licensed, actively maintained dependencies
+- **Lightweight** — No heavy diagram framework; uses only MIT-licensed, actively maintained dependencies (It will evolve into a full-featured diagram editor)
 
 ---
 
